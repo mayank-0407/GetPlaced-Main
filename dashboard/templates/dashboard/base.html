@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Lobster|Ubuntu|Sacramento|Merriweather|Audiowide|Sofia|Trirong">
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <link rel="icon" href="{% static 'img/logo.ico' %}" type="image/x-icon"> {% block title %}{% endblock %}
+</head>
+
+<!--
+<body oncontextmenu="return false;">
+-->
+<body>
+    {% block body %}{% endblock %}
+    <div id="progressbar"></div>
+    <input type="checkbox" id="nav-toggle" />
+    <div class="sidebar" id="sime">
+        <div class="sidebar-brand">
+            <a href="{% url 'home' %}" style="text-decoration: none; color: white;">
+                <h2><span class="lab la-accusoft"></span> <span>Web-I</span></h2>
+            </a>
+        </div>
+        {% block sidebar_menu %}{% endblock %}
+
+    </div>
+    <div class="main-content">
+        <header>
+            <h2>
+                <label for="nav-toggle">
+          <span class="las la-bars"></span>
+        </label> {% block dashboard_title %}{% endblock %}
+            </h2>
+            <div class="search-wrapper">
+        <span class="las la-search"></span>
+        <form action="{% url 'search_users' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input id="myInput" name="search" type="search" placeholder="Search here">
+            <button type="submit" value="" style="display: none;">
+        </form>
+      </div>
+            <div class="user-wrapper">
+                <div class="action">
+                    <div class="profile" onclick="menuToggle();">
+                        {% if data.image %}
+                        <img src="{{data.image.url}}" alt=""> {% else %}
+                        <img src="{% static 'dashboard/img/us_ma.png' %}" alt=""> {% endif %}
+                        <!-- <img src="img/img.jpg" alt=""> -->
+                    </div>
+                    <div class="menu">
+                        <h3>{{request.user}}<br> {% if request.user.is_superuser %}
+                            <span>Administrator</span> {% else %} {% if request.user.is_staff %}
+                            <span>Staff</span> {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                            <span>Company</span> {% else %}
+                            <span>Student</span> {% endifequal %} {% endif %} {% endif %}
+                        </h3>
+                        {% if request.user.is_authenticated %}
+                        <ul>
+                            {% if request.user.is_staff %}
+                            <li>
+                                <a href="{% url 'check_staff_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                            </li>
+                            {% else %}
+                            <li>
+                                {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                                <a href="{% url 'check_company_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% else %}
+                                <a href="{% url 'check_student_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% endifequal %}
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'notifications' %}"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a>
+                            </li>
+                            {% if request.user.is_staff %}{% else %}
+                            <li>
+                                <a href="{% url 'all_chats' %}"><img src="{% static 'dashboard/img/support.png' %}" alt=""> Support</a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'change_password' %}"><img src="{% static 'dashboard/img/key.png' %}" alt=""> Password</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout_request' %}"><img src="{% static 'dashboard/img/logout.png' %}" alt="">Logout</a>
+                            </li>
+                        </ul>
+                        {% else %} {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+        {% block section_main %}{% endblock %}
+    </div>
+    {% block outside %}{% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous"></script>
+    <script src="{% static 'dashboard/js/app.js' %}"></script>
+    <script src="{% static 'dashboard/js/timer.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dashboard/js/table.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"> </script>
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"> </script>
+    <script>
+    function toexcel(id){
+        $(id).table2excel({
+        filename: "data.xlsx"
+        });
+    }
+    </script>
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    {% block js_content %}{% endblock %}
+</body>
+
+</html>

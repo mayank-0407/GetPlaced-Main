@@ -1,0 +1,33 @@
+#myTable tr td:first-child {
+    width: 10px !important;
+}
+
+.mycheckbox {
+    width: 20px !important;
+}
+
+.re {
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    width: fit-content !important;
+    /* background: linear-gradient(to right, #07d800, #76ff06); */
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    font-family: Poppins;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.re1 {
+    background: linear-gradient(to right, #6eac0a, #76ff06);
+}
+
+.re2 {
+    background: linear-gradient(to right, #ac580a, #ff0606);
+}
+
+.myresult {
+    display: inline-block;
+}

@@ -1,0 +1,248 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+<!--Write the title of the page-->
+{% block title %}
+<title>Dashboard {{request.user.email}}</title>
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock %}
+
+<!--Make the class active for the link you want-->
+{% block sidebar_menu %}
+<div class="sidebar-menu">
+    <ul>
+        <li>
+            <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <hr>
+        <li>
+            <a href="{% url 'profile' %}" class=""><span class="las la-id-card"></span>
+            <span>Profile</span>
+          </a>
+        </li>
+
+        {% if request.user.is_staff %}
+          {% if permissions.can_manage_sessions %}
+          <li>
+              <a href="{% url 'manage_sessions' %}" class=""><span class="las la-history"></span>
+              <span>Manage Sessions </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.create_new_accounts %}
+          <li>
+              <a href="{% url 'create_accounts' %}" class=""><span class="las la-user-plus"></span>
+              <span>Create Accounts </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_internships %}
+          <li>
+              <a href="{% url 'manage_company_internships' %}" class=""><span class="las la-users"></span>
+              <span>Manage Internships </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_access_student_inactive_accounts %}
+          <li>
+              <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
+              <span>Student Accounts</span>
+            </a>
+          </li>
+          {% endif %} {% if permissions.can_access_company_inactive_accounts %}
+          <li>
+              <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-graduate"></span>
+              <span>Company Accounts</span>
+            </a>
+          </li>
+          {% endif %} {% if permissions.can_ban_users %}
+          <li>
+              <a href="{% url 'restrict_users' %}"><span class="las la-user-slash"></span>
+              <span>Restrict Users </span>
+            </a>
+          </li>
+          {% endif %}
+          {% if permissions.can_unban_users and request.user.is_superuser %}
+          <li>
+              <a href="{% url 'unban_user' item='0' %}" class=""><span class="las la-user"></span>
+              <span>Un-restrict Users </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_blogs %}
+          <li>
+              <a href="{% url 'manage_blogs' %}" class=""><span class="las la-blog"></span>
+              <span>Manage Blogs </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_staff_accounts and request.user.is_superuser %}
+          <li>
+              <a href="{% url 'manage_staff_accounts' %}" class=""><span class="las la-user-circle"></span>
+              <span>Manage Staff Accounts </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_give_notifications %}
+          <li>
+              <a href="{% url 'give_notifications' %}" class=""><span class="las la-bell"></span>
+              <span>Float Notification </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_technical_support %}
+          <li>
+              <a href="{% url 'technical_support_assist' %}" class=""><span class="lar la-comment-alt"></span>
+              <span>Manage Support </span>
+            </a>
+          </li>
+          {% endif %} 
+        {% endif %}
+        
+        {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+          <li>
+              <a href="{% url 'announcements' %}"><span class="las la-bullhorn"></span>
+              <span>My Announcements</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'new_announcement_round' %}"><span class="las la-plus-circle"></span>
+              <span>Announce New Round</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'new_announcement' %}"><span class="las la-plus"></span>
+              <span>New Announcement</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'announce_internship' %}"><span class="las la-plus-square"></span>
+              <span>Announce Internship</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'internships' %}"><span class="las la-user-md"></span>
+              <span>My Internships</span>
+            </a>
+          </li>
+        <!--Student only-->
+        {% else %}
+          <li>
+              <a href="{% url 'show_companies' %}"><span class="las la-registered"></span>
+              <span>Register</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'show_registrations' %}"><span class="las la-graduation-cap"></span>
+              <span>My Registrations</span>
+            </a>
+          </li>
+        {% endifequal %} {% endif %}
+
+
+    </ul>
+</div>
+{% endblock %}
+
+<!--For the text at the top of panel 2-->
+{% block dashboard_title %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Chat Request ID # {{chat_request.id}}</a> {% endblock %}
+
+<!--For the user details displayed at the top right-->
+
+
+<!--For the main section : 3-->
+{% block section_main %}
+
+<main>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        	<div class="card">
+        		<div class="card-header" style="background-color: black !important;">
+            {% if chat_request.chat_ended %}
+            ISSUE RESOLVED
+            {% else %}
+            <span style="float: left" id="total_new_messages">0 New Messages</span>
+            <span style="float:right" onclick="end_chat()">End Chat</span>
+            {% endif %}
+            </div>
+        		<div class="card-body height3 scrollbar scrollbar-danger" id="scroller">
+        			<ul class="chat-list" id="all_chatss">
+                {% comment %} Request {% endcomment %}
+                <li class="out">
+        					<div class="chat-img">
+        						<img src="{{profile.image.url}}" alt="{% static 'img/us_ma.png' %}">
+        					</div>
+        					<div class="chat-body">
+        						<div class="chat-message">
+        							<h5>{{chat_request.user.username}} - {{chat_request.message_time}}</h5>
+        							<p>{{chat_request.message}}</p>
+        						</div>
+        					</div>
+        				</li>
+                {% comment %} Request {% endcomment %}
+        				
+                {% for each in chat_response %}
+                  {% ifequal request.user each.responder %}
+                  <li class="out">
+                    <div class="chat-img">
+                      <img src="{{profile.image.url}}" alt="{% static 'img/us_ma.png' %}">
+                    </div>
+                    <div class="chat-body">
+                      <div class="chat-message">
+                        <h5>{{request.user.username}} - {{each.message_time}}</h5>
+                        <p>{{each.message}}</p>
+                      </div>
+                    </div>
+                  </li>
+                  {% else %}
+                  <li class="in">
+                    <div class="chat-img">
+                      <img src="{% static 'img/staff.png' %}" alt="{% static 'img/us_ma.png' %}">
+                    </div>
+                    <div class="chat-body">
+                      <div class="chat-message">
+                        <h5>{{each.responder.username}} - {{each.message_time}}</h5>
+                        <p>{{each.message}}</p>
+                      </div>
+                    </div>
+                  </li>
+                  {% endifequal %}
+                {% endfor %}
+        			</ul>
+        		</div>
+              <div class="textarea-container">
+                {% if chat_request.chat_ended %}
+                <p style="display: none" id="chat_receiver">0</p>
+                <textarea class="form-control form-inline card-footer" id="chat_message" placeholder="No More Chats can be sent now.." name="chat" rows=1 style="resize:none;"></textarea>
+                {% else %}
+                <textarea class="form-control form-inline card-footer" id="chat_message" placeholder="Enter your message...." name="chat" rows=1 style="resize:none;"></textarea>
+                <i class="fas fa-arrow-circle-up" onclick="send_message()"></i>
+                <p style="display: none" id="chat_receiver">1</p>
+                {% endif %}
+              </div>
+        	</div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none">
+  <p id="user_name">{{request.user.username}}</p>
+  {% if profile.image %}
+    <p id="pr_image" style="display: none">{{profile.image}}</p>
+  {% else %}
+    <p id="pr_image" style="display: none">0</p>
+  {% endif %}
+  <p id="chat_re_id">{{chat_request.id}}</p>
+</div>
+
+</main>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'ajax/chat.js' %}"></script>
+{% endblock %}

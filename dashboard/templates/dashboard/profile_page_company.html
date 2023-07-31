@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/profile_page_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile_modal.css' %}" />
+    <link rel="stylesheet" href="{% static 'dashboard/css/toggle_button.css' %}" />
+    <title></title>
+</head>
+
+<body oncontextmenu="return false;">
+    {% if request.user.is_authenticated %}
+    {% if data.user.is_staff or data.user.is_superuser %} 
+    PROFILE NOT FOUND 
+    {% else %} 
+    {% ifnotequal data.user.last_name 'This_is_a_company_Associated_account' %} 
+    PROFILE NOT FOUND
+    {% else %}
+
+    <div class="main-content">
+        <!-- Top navbar -->
+        <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
+            <div class="container-fluid">
+                <!-- Brand -->
+                <p style="color: white;">&nbsp;&nbsp; Company profile
+                    <p>
+                        <ul class="navbar-nav align-items-center d-none d-md-flex">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="media align-items-center">
+                                        <span class="avatar avatar-sm rounded-circle">
+                                            {% if data.image %}
+                                            <img src="{{data.image.url}}"  style="border-radius: 50%; height: 35px"  alt=""> {% else %}
+                                            <img src="{% static 'dashboard/img/us_ma.png' %}"  style="border-radius: 50%; height: 35px"  alt=""> {% endif %}
+                                        </span>
+                                        <div class="media-body ml-2 d-none d-lg-block">
+                                            <span class="mb-0 text-sm  font-weight-bold">{{data.user.first_name}}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+            </div>
+        </nav>
+        <!-- Header -->
+        <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 600px; background-size: cover; background-position: center top;">
+            <!-- Mask -->
+            <span class="mask bg-gradient-default opacity-8"></span>
+            <!-- Header container -->
+            <div class="container-fluid d-flex align-items-center">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <h1 class="display-2 text-white">{{data.user.first_name}} Profile Page</h1>
+                        <p class="text-white mt-0 mb-5">Since you have permissions to see this profile page, you are viewing it. Rather no one without permission can see it.</p>
+                        <a onclick="window.history.back();" style="color: white" class="btn btn-primary">Go Back</a> 
+                        {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                        <a href="{% url 'internships' %}" style="color: white" class="btn btn-info"> My Internships</a> 
+                        {% else %}
+                        <a href="{% url 'show_companies' %}" style="color: white" class="btn btn-info"> Register</a> 
+                        {% endifequal %}
+                        {% ifequal request.user data.original_user %}
+                            <a style="color: white" class="btn btn-danger" id="delete_account"> Delete Account</a> 
+                     
+                        {% endifequal %}
+                    </div>
+                    <div class="col-lg-12 col-md-12" style="margin-top: 50px !important; ">
+                        {% ifequal request.user data.original_user %}
+
+                            {% if data.let_staff_manage %}
+                                    <p class="text-white" style="margin-top: 2px; float : left">On turning this off, staff can't manage your internships</p>
+                                    <label class="switch" style="float: left">
+                                        <input type="checkbox" onchange="call_slider()" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                    <p id="myid" style="display: none">{{request.user.id}}</p>
+                            {% else %}
+                                    <p class="text-white" style="margin-top: 2px; float : left">Turning this on will let staff manage your internship</p>
+                                    <label class="switch" style="float: left">
+                                        <input type="checkbox" onchange="call_slider()">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <p id="myid" style="display: none">{{request.user.id}}</p>
+                            {% endif %}
+                        {% endifequal %}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-xl-12 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                        <div class="card-profile-image">
+                            <a href="#">
+                                {% if data.image %}
+                                <img src="{{data.image.url}}" style="border-radius: 50%; height: 160px; width: 160px" alt=""> {% else %}
+                                <img src="{% static 'dashboard/img/us_ma.png' %}"  style="border-radius: 50%; height: 160px; width: 160px"  alt=""> {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="padding-top: 100px;">
+                    <form>
+                        <h6 class="heading-small text-muted mb-4">Company information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-username">Username</label>
+                                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value={{data.user}} readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Email address</label>
+                                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="Email" value={{data.user.email}} readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-first-name">Company name</label>
+                                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="{{data.user.first_name}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <!-- Address -->
+                        <h6 class="heading-small text-muted mb-4">Additional information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-address">Company Address</label>
+                                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="{{data.complete_address}}" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-city">Contact Info (For queries)</label>
+                                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Contact Number" value={{data.contact_number}} readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <hr class="my-4">
+                            <h6 class="heading-small text-muted mb-4">Announcements</h6>
+                            <div class="pl-lg-4">
+                                <div class="row">
+
+                                    {% for each in general_announcements %}
+                                    <div class="col-lg-4">
+                                        <div class="form-group focused">
+                                            <label class="form-control-label" for="input-username">Posted on {{each.announcement_date}}</label>
+                                            <b>{% if each.file %}
+                                                <a href="{{each.file.url}}" style="margin-left: 80px;">File 1</a>
+                                                {% if each.file_for_prev_result %}
+                                                    <a href="{{each.file_for_prev_result.url}}" style="float: right">File 2</a>
+                                                {% endif %}
+                                            
+                                            {% else %}
+                                                {% if each.file_for_prev_result %}
+                                                    <a href="{{each.file_for_prev_result.url}}" style="float: right">File 1</a>
+                                                {% endif %}
+                                            {% endif %}
+                                            </b>
+                                            <textarea  class="form-control form-control-alternative" placeholder="Announcement message" rows=6 readonly>{{each.message}}</textarea>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <footer class="footer">
+        <div class="row align-items-center justify-content-xl-between">
+            <div class="col-xl-8 m-auto text-center">
+                <div class="copyright">
+                    <p>If you are viewing from a student account then this company may have given false information about him/ her so, you can ignore its internship or can complaint to the staff and give them his user ID which is: {{data.user.id}}</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endifnotequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
+
+
+    {% ifequal request.user data.user %}
+    <!-- The Delete account Modal -->
+    <p style="display: none" id="usersname">{{request.user}}</p>
+    <div id="deleteModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p class="mypara">This is the final Warning after which you will not be able to recover the account. All the progress would be lost.If you are sure to delete your account permanently, then write your username in the text box</p>
+            <input type="text" id="myusername" style="width: 80%;" onkeyup="text_changed(this.value)">
+            <div id="buttn">
+                <a class="btn" id="deel" style="text-decoration: none; background-color: #FFECEC; color: white" href="{% url 'delete_account' %}">Delete Account</a>
+                <button type="button" class="btn btn-primary" onclick="close_modal()">cancel</button>
+            </div>
+        </div>
+    </div>
+    {% endifequal %}
+    
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/profile_modal.js' %}"></script>
+</body>
+
+</html>
