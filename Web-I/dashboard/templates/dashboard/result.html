@@ -1,0 +1,349 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+<!--Write the title of the page-->
+{% block title %}
+<title>Dashboard {{request.user.email}}</title>
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'dashboard/css/result.css' %}">
+{% endblock %}
+
+
+{% block sidebar_menu %}
+<div class="sidebar-menu">
+    <ul>
+        <li>
+            <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <hr>
+        <li>
+            <a href="{% url 'profile' %}" class=""><span class="las la-id-card"></span>
+            <span>Profile</span>
+          </a>
+        </li>
+
+        {% if request.user.is_staff %}
+          {% if permissions.can_manage_sessions %}
+          <li>
+              <a href="{% url 'manage_sessions' %}" class=""><span class="las la-history"></span>
+              <span>Manage Sessions </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.create_new_accounts %}
+          <li>
+              <a href="{% url 'create_accounts' %}" class=""><span class="las la-user-plus"></span>
+              <span>Create Accounts </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_internships %}
+          <li>
+              <a href="{% url 'manage_company_internships' %}" class=""><span class="las la-users"></span>
+              <span>Manage Internships </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_access_student_inactive_accounts %}
+          <li>
+              <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
+              <span>Student Accounts</span>
+            </a>
+          </li>
+          {% endif %} {% if permissions.can_access_company_inactive_accounts %}
+          <li>
+              <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-graduate"></span>
+              <span>Company Accounts</span>
+            </a>
+          </li>
+          {% endif %} {% if permissions.can_ban_users %}
+          <li>
+              <a href="{% url 'restrict_users' %}"><span class="las la-user-slash"></span>
+              <span>Restrict Users </span>
+            </a>
+          </li>
+          {% endif %}
+          {% if permissions.can_unban_users and request.user.is_superuser %}
+          <li>
+              <a href="{% url 'unban_user' item='0' %}" class=""><span class="las la-user"></span>
+              <span>Un-restrict Users </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_blogs %}
+          <li>
+              <a href="{% url 'manage_blogs' %}" class=""><span class="las la-blog"></span>
+              <span>Manage Blogs </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_staff_accounts and request.user.is_superuser %}
+          <li>
+              <a href="{% url 'manage_staff_accounts' %}" class=""><span class="las la-user-circle"></span>
+              <span>Manage Staff Accounts </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_give_notifications %}
+          <li>
+              <a href="{% url 'give_notifications' %}" class=""><span class="las la-bell"></span>
+              <span>Float Notification </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_technical_support %}
+          <li>
+              <a href="{% url 'technical_support_assist' %}" class=""><span class="lar la-comment-alt"></span>
+              <span>Manage Support </span>
+            </a>
+          </li>
+          {% endif %} 
+        {% endif %}
+        
+        {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+          <li>
+              <a href="{% url 'announcements' %}" class="active"><span class="las la-bullhorn"></span>
+              <span>My Announcements</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'new_announcement_round' %}"><span class="las la-plus-circle"></span>
+              <span>Announce New Round</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'new_announcement' %}"><span class="las la-plus"></span>
+              <span>New Announcement</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'announce_internship' %}"><span class="las la-plus-square"></span>
+              <span>Announce Internship</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'internships' %}"><span class="las la-user-md"></span>
+              <span>My Internships</span>
+            </a>
+          </li>
+        <!--Student only-->
+        {% else %}
+          <li>
+              <a href="{% url 'show_companies' %}"><span class="las la-registered"></span>
+              <span>Register</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'show_registrations' %}"><span class="las la-graduation-cap"></span>
+              <span>My Registrations</span>
+            </a>
+          </li>
+        {% endifequal %} {% endif %}
+
+
+    </ul>
+</div>
+{% endblock %}
+
+<!--For the text at the top of panel 2-->
+{% block dashboard_title %} Result Announcement {% endblock %}
+
+<!--For the user details displayed at the top right-->
+{% block section_main %}
+
+<!--For the main section : 3-->
+
+<main>
+
+{% if data.last_round_result_announced %}
+  <div class="alert alert-dismissible fade show" role="alert" style="background-color: #CEDA6A">
+    <strong>Final Result has been announced</strong>
+  </div>
+{% else %}
+  {% if data.last_round %}
+      <div class="alert alert-dismissible fade show" role="alert" style="background-color: #CEDA6A">
+      <strong><a href="{% url 'seeze_results' item=data.id %}" onclick="return confirm('This will decline all the registrations for this internship.\nYou can see the final students list in My Internships Section\n\nIf you close browser or stopped processing in between then result may not be generated properly, so wait patiently.')">Seeze Results</a></strong>
+    </div>
+             
+  {% endif %}
+{% endif %}
+
+{% if error %}
+  <div class="alert alert-dismissible fade show" role="alert" style="background-color: #F46A3E">
+    <strong>{{error}}</strong>
+  </div>
+{% endif %}
+
+{% if success %}
+  <div class="alert alert-dismissible fade show" role="alert" style="background-color: green">
+    <strong>{{success}}</strong>
+  </div>
+{% endif %}
+    <div class="recent-grid1">
+        <div class="projects">
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin-left: 13%;">All Registrations</h3>
+                    <button type="button" onclick="toexcel('#myTable')" style="width: 170px; text-align: center;">Export to excel</button>
+                    <!-- <div id="myTable_filter" class="search-wrapper1">
+                <span class="las la-search"></span>
+                <input type="search" aria-controls="myTable" placeholder="Search User">
+              </div> -->
+                    <!-- <button type="button" name="See all">See all <span class="las la-arrow-right"></span></button> -->
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive container">
+                        <!-- <div id="myTable_filter" class="search-wrapper1 dataTables_filter">
+                  <span class="las la-search"></span>
+                  <input type="search" aria-controls="myTable" placeholder="Search User">
+                </div> -->
+                        <table id="myTable" class="display nowrap" style="width: 100%">
+                            <thead id="thead">
+                                <tr id="tr1" style="text-align: center;">
+                                    <td>#</td>
+                                    <td id="td0">Student ID</td>
+                                    <td id="td1">Name</td>
+                                    <td id="td1">Registration Date (UTC)</td>
+                                    <td>Result Status</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--To be changed w.r.t student -->
+                                {% for each in students %} 
+                                    {% ifequal data.internship_round each.company.internship_round %} 
+                                        {% ifequal each.result_status 0 %}
+                                        <tr id="tr1 " style="text-align: center; ">
+                                            <td style="width: 5%">
+                                                <input class="mycheckbox" onclick="checkbox_checker('{{each.student.id}}')" id='{{each.student.id}}' type="checkbox">
+                                            </td>
+                                            <td><a href="{% url 'check_student_profile' item=each.student.id %}">{{each.student.id}}</a></td>
+                                            <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                            <td>{{each.date_of_registrations}}</td>
+                                            <td>Not Announced</td>
+                                        </tr>
+                                        {% endifequal %} 
+                                        {% ifequal each.result_status 1 %}
+                                            <tr id="tr1 " style="text-align: center; ">
+                                                <td style="width: 5%">
+                                                    -
+                                                </td>
+                                                <td><a href="{% url 'check_student_profile' item=each.student.id %}">{{each.student.id}}</a></td>
+                                                <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                                <td>{{each.date_of_registrations}}</td>
+                                                <td style="color: green">Cleared</td>
+
+                                            </tr>
+                                        {% endifequal %} 
+                                        {% ifequal each.result_status 3 %}
+                                            <tr id="tr1 " style="text-align: center; ">
+                                                <td style="width: 5%">
+                                                    -
+                                                </td>
+                                                <td><a href="{% url 'check_student_profile' item=each.student.id %}">{{each.student.id}}</a></td>
+                                                <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                                <td>{{each.date_of_registrations}}</td>
+                                                <td style="color: red">Reverted</td>
+
+                                            </tr>
+                                        {% endifequal %} 
+                                    {% else %}
+                                      {% if data.internship_round > each.company.internship_round %}
+                                      {% else %}
+                                        {% ifnotequal each.result_status 2 %}
+                                            <tr id="tr1 " style="text-align: center; ">
+                                                <td style="width: 5%">
+                                                    -
+                                                </td>
+                                                <td><a href="{% url 'check_student_profile' item=each.student.id %}">{{each.student.id}}</a></td>
+                                                <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                                <td>{{each.date_of_registrations}}</td>
+                                                <td style="color: green">Cleared</td>
+
+                                            </tr>
+                                        {% else %} 
+                                        
+                                        {% if data.internship_round < each.company.internship_round %} 
+                                            <tr id="tr1 " style="text-align: center; ">
+                                                <td style="width: 5%">
+                                                    -
+                                                </td>
+                                                <td><a href="{% url 'check_student_profile' item=each.student.id %}">{{each.student.id}}</a></td>
+                                                <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                                <td>{{each.date_of_registrations}}</td>
+                                                <td style="color: green">Cleared</td>
+
+                                                </tr>
+                                        {% endif %} 
+                                        
+                                        {% endifnotequal %} 
+                                      {% endif %}  
+                                    {% endifequal %} 
+                                    
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center">
+            <div class="myresult">
+                <table>
+                    <tr>
+                            <td>
+                                <button type="button" class="re3 re" onclick="open_uploader()" data-toggle="modal" data-target="#uploader">Upload</button>
+                            </td>
+                        <form href="{% url 'stu_result' item=data.id %}" method="POST" onsubmit="call_preloader()">
+                            {% csrf_token %}
+                            <input type="hidden" name="students" value="" id="pass_form" required>
+                            
+                            
+                            <td>
+                                <button type="submit" class="re1 re" onmouseout="not_pass_me()" onmouseover="pass_me()">Pass</button>
+                            </td>
+                            <td>
+                                <button type="submit" class="re2 re" onmouseout="not_fail_me()" onmouseover="fail_me()">Fail</button>
+                            </td>
+                        </form>
+                </table>
+            </div>
+            <p style="color: red">Note: these actions can't be undone</p>
+        </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="uploader" tabindex="-1" role="dialog" aria-labelledby="uploaderLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploaderLabel">Upload Results</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Please read these instructions before uploading results to avoid any type of confusion:</p>
+        <p style="margin-left: 10px">1. Only CSV and EXCEL files are allowed. <a href="{% static 'sample/Sample_Result_Upload.zip' %}">Sample Excel File</a></p>
+        <p style="margin-left: 10px">2. There could be multiple columns, there order does not matter, for example - consider columns A and B, A can be given in the column after or before B but inside A column, only A's entries should be there.</p>
+        <p style="margin-left: 10px">3. If any duplicate entry is found, then first copy will be taken and rest will be dropped.</p>
+        <p style="margin-left: 10px">4. Compulsory Columns are : Email or Username (Any One is sufficient. If both are given then email will be taken). Column Names should be in title case.</p>
+        <p style="margin-left: 10px">5. Temporary Columns are : "Result Status" which can has 2 values only as "Pass" or "Fail". Note: If this column is not given then default status would be passed.</p>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'students_result_file_upload' item=data.id %}" method="POST" enctype="multipart/form-data" onsubmit="call_preloader()">
+          {% csrf_token %}
+          <input type="file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" id="file" class="input-field" required>
+          <button type="submit" class="btn btn-primary">Upload Results</button>
+          <p id="para" style="display: none; color: green">Uploading Please Wait for a while.</p>
+        </form>
+        {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+<script type="text/javascript " src="{% static 'dashboard/js/result.js' %} "></script>
+{% endblock %}

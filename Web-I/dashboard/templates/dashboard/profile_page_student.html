@@ -1,0 +1,323 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/profile_page_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile_modal.css' %}" />
+    <title>PROFILE {{data.user.email}}</title>
+</head>
+
+<body oncontextmenu="return false;">
+    {% if request.user.is_authenticated %}{% if data.user.is_staff or data.user.is_superuser %} PROFILE NOT FOUND {% else %} {% ifequal data.user.last_name 'This_is_a_company_Associated_account' %} PROFILE NOT FOUND{% else %}
+
+    <div class="main-content">
+        <!-- Top navbar -->
+        <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
+            <div class="container-fluid">
+                <!-- Brand -->
+                <p style="color: white;">&nbsp;&nbsp; Student profile
+                    <p>
+                        <!-- Form -->
+                        <!-- <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
+                            <div class="form-group mb-0">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+                                    <input class="form-control" placeholder="Search" type="text">
+                                </div>
+                            </div>
+                        </form> -->
+                        <!-- User -->
+                        <ul class="navbar-nav align-items-center d-none d-md-flex">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="media align-items-center">
+                                        <span class="avatar avatar-sm rounded-circle">
+                                            {% if data.image %}
+                                            <img src="{{data.image.url}}"  style="border-radius: 50%; height: 35px"  alt=""> {% else %}
+                                            <img src="{% static 'dashboard/img/us_ma.png' %}"  style="border-radius: 50%; height: 35px"  alt=""> {% endif %}
+                                        </span>
+                                        <div class="media-body ml-2 d-none d-lg-block">
+                                            <span class="mb-0 text-sm  font-weight-bold">{{data.user.first_name}} {{data.user.last_name}}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+            </div>
+        </nav>
+        <!-- Header -->
+        <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 600px; background-size: cover; background-position: center top;">
+            <!-- Mask -->
+            <span class="mask bg-gradient-default opacity-8"></span>
+            <!-- Header container -->
+            <div class="container-fluid d-flex align-items-center">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <h1 class="display-2 text-white">{{data.user.first_name}} Profile Page</h1>
+                        <p class="text-white mt-0 mb-5">Since you have permissions to see this profile page, you are viewing it. Rather no one without permission can see it.</p>
+                        <a onclick="window.history.back();" style="color: white" class="btn btn-primary">Go Back</a> {% if data.cv %}
+                        <a href="{{data.cv.url}}" style="color: white" class="btn btn-info">View CV</a> {% else %}
+                        <a style="color: white" class="btn btn-info"> CV not available</a> {% endif %}
+                        <a style="color: white" class="btn btn-info"> CGPA = {{data.cgpa}}</a>
+                        {% ifequal request.user data.user %}
+                            <a style="color: white" class="btn btn-danger" id="delete_account"> Delete Account</a> 
+                        {% endifequal %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page content -->
+        <!-- <div class="container-fluid mt--7">
+            <div class="row">
+                <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+                    <div class="card card-profile shadow">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-3 order-lg-2">
+                                <div class="card-profile-image">
+                                    <a href="#">
+                                        <img src="{{data.image.url}}" class="rounded-circle">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                            <div class="d-flex justify-content-between">
+                                <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
+                                <a href="#" class="btn btn-sm btn-default float-right">Message</a>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0 pt-md-4">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                                        <div>
+                                            <span class="heading">22</span>
+                                            <span class="description">Friends</span>
+                                        </div>
+                                        <div>
+                                            <span class="heading">10</span>
+                                            <span class="description">Photos</span>
+                                        </div>
+                                        <div>
+                                            <span class="heading">89</span>
+                                            <span class="description">Comments</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h3>
+                                    Jessica Jones<span class="font-weight-light">, 27</span>
+                                </h3>
+                                <div class="h5 font-weight-300">
+                                    <i class="ni location_pin mr-2"></i>Bucharest, Romania
+                                </div>
+                                <div class="h5 mt-4">
+                                    <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+                                </div>
+                                <div>
+                                    <i class="ni education_hat mr-2"></i>University of Computer Science
+                                </div>
+                                <hr class="my-4">
+                                <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
+                                <a href="#">Show more</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+        <div class="col-xl-12 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                        <div class="card-profile-image">
+                            <a href="#">
+                                {% if data.image %}
+                                <img src="{{data.image.url}}" style="border-radius: 50%; height: 160px; width: 160px" alt=""> {% else %}
+                                <img src="{% static 'dashboard/img/us_ma.png' %}"  style="border-radius: 50%; height: 160px; width: 160px"  alt=""> {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="card-header bg-white border-0">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <h3 class="mb-0">Account Details</h3>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                                </div>
+                            </div>
+                        </div> -->
+                <div class="card-body" style="padding-top: 100px;">
+                    <form>
+                        <h6 class="heading-small text-muted mb-4">User information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-username">Username</label>
+                                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value={{data.user}} readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Email address</label>
+                                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="Email" value={{data.user.email}} readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-first-name">First name</label>
+                                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="{{data.user.first_name}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-last-name">Last name</label>
+                                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="{{data.user.last_name}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <!-- Address -->
+                        <h6 class="heading-small text-muted mb-4">Additional information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-address">Address</label>
+                                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="{{data.complete_address}}" type="text" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-city">Contact Number</label>
+                                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Contact Number" value={{data.contact_number}} readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group focused">
+                                        <label class="form-control-label" for="input-country">Gender</label>
+                                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Gender" value="{{data.gender}}" readonly>
+                                    </div>
+                                    <!-- </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="input-country">CGPA</label>
+                                                <input type="text" id="input-postal-code" class="form-control form-control-alternative" placeholder="CGPA" value="{{data.cgpa}}" readonly>
+                                            </div>
+                                        </div> -->
+                                </div>
+                            </div>
+                        </form>
+                    {% ifequal request.user data.user %}
+                    <form method="POST" action="{% url 'check_student_profile' item=data.user.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                    <hr class="my-4">
+                    <!-- Address -->
+                    <h6 class="heading-small text mb-4">Settings</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group focused">
+                                    <input type="hidden" name="user_id" value={{data.user.id}} required>
+                                    <label class="form-control-label" for="input-city">Profile Visibility</label>
+                                    <select name="profile_visibility" class="form-control form-control-alternative">
+                                        {% if permissions.to_registered_companies %}
+                                        <option value="1">To registered companies</option>
+                                        <option value="2">To all companies</option>
+                                        <option value="3">To all students</option>
+                                        <option value="4">To all companies and students</option>
+                                        {% else %}
+
+                                            {% if permissions.to_all_companies %}
+                                            <option value="2">To all companies</option>
+                                            <option value="1">To registered companies</option>
+                                            <option value="3">To all students</option>
+                                            <option value="4">To all companies and students</option>
+                                            {% else %}
+
+                                                {% if permissions.to_all_students %}
+                                                <option value="3">To all students</option>
+                                                <option value="1">To registered companies</option>
+                                                <option value="2">To all companies</option>
+                                                <option value="4">To all companies and students</option>
+                                                {% else %}
+
+                                                    {% if permissions.to_all %}
+                                                    <option value="4">To all companies and students</option>
+                                                    <option value="1">To registered companies</option>
+                                                    <option value="2">To all companies</option>
+                                                    <option value="3">To all students</option>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group focused">
+                                    <button type="submit" style="color: white; width: fit-content; margin-top: 33px;" class="btn btn-primary" >Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        {% endifequal %}
+
+                            <hr class="my-4">
+                        </form>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <footer class="footer">
+        <div class="row align-items-center justify-content-xl-between">
+            <div class="col-xl-8 m-auto text-center">
+                <div class="copyright">
+                    <p>If you are viewing from a company account then this user may have given false information about him/ her so, you can eliminate this user from internship or can complaint to the staff and give them his user ID which is: {{data.user.id}}</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endifequal %} {% endif %} 
+    
+
+    {% ifequal request.user data.user %}
+    <!-- The Delete account Modal -->
+    <p style="display: none" id="usersname">{{request.user}}</p>
+    <div id="deleteModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p class="mypara">This is the final Warning after which you will not be able to recover the account. All the progress would be lost.If you are sure to delete your account permanently, then write your username in the text box</p>
+            <input type="text" id="myusername" style="width: 80%;" onkeyup="text_changed(this.value)">
+            <div id="buttn">
+                <a class="btn" id="deel" style="text-decoration: none; background-color: #FFECEC; color: white" href="{% url 'delete_account' %}">Delete Account</a>
+                <button type="button" class="btn btn-primary" onclick="close_modal()">cancel</button>
+            </div>
+        </div>
+    </div>
+    {% endifequal %}{% else %} PROFILE NOT FOUND {% endif %}
+    
+    <!-- <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/profile_modal.js' %}"></script>
+</body>
+
+</html>

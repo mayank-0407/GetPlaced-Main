@@ -1,0 +1,226 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+<!--Write the title of the page-->
+{% block title %}
+<title>Dashboard {{request.user.email}}</title>
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon"> {% endblock %}
+
+
+{% block sidebar_menu %}
+<div class="sidebar-menu">
+    <ul>
+        <li>
+            <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <hr>
+        <li>
+            <a href="{% url 'profile' %}" class=""><span class="las la-id-card"></span>
+            <span>Profile</span>
+          </a>
+        </li>
+
+        {% if request.user.is_staff %}
+          {% if permissions.can_manage_sessions %}
+          <li>
+              <a href="{% url 'manage_sessions' %}" class=""><span class="las la-history"></span>
+              <span>Manage Sessions </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.create_new_accounts %}
+          <li>
+              <a href="{% url 'create_accounts' %}" class=""><span class="las la-user-plus"></span>
+              <span>Create Accounts </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_internships %}
+          <li>
+              <a href="{% url 'manage_company_internships' %}" class=""><span class="las la-users"></span>
+              <span>Manage Internships </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_access_student_inactive_accounts %}
+          <li>
+              <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
+              <span>Student Accounts</span>
+            </a>
+          </li>
+          {% endif %} {% if permissions.can_access_company_inactive_accounts %}
+          <li>
+              <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-graduate"></span>
+              <span>Company Accounts</span>
+            </a>
+          </li>
+          {% endif %} {% if permissions.can_ban_users %}
+          <li>
+              <a href="{% url 'restrict_users' %}"><span class="las la-user-slash"></span>
+              <span>Restrict Users </span>
+            </a>
+          </li>
+          {% endif %}
+          {% if permissions.can_unban_users and request.user.is_superuser %}
+          <li>
+              <a href="{% url 'unban_user' item='0' %}" class="active"><span class="las la-user"></span>
+              <span>Un-restrict Users </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_blogs %}
+          <li>
+              <a href="{% url 'manage_blogs' %}" class=""><span class="las la-blog"></span>
+              <span>Manage Blogs </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_staff_accounts and request.user.is_superuser %}
+          <li>
+              <a href="{% url 'manage_staff_accounts' %}" class=""><span class="las la-user-circle"></span>
+              <span>Manage Staff Accounts </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_give_notifications %}
+          <li>
+              <a href="{% url 'give_notifications' %}" class=""><span class="las la-bell"></span>
+              <span>Float Notification </span>
+            </a>
+          </li>
+          {% endif %} 
+          {% if permissions.can_manage_technical_support %}
+          <li>
+              <a href="{% url 'technical_support_assist' %}" class=""><span class="lar la-comment-alt"></span>
+              <span>Manage Support </span>
+            </a>
+          </li>
+          {% endif %} 
+        {% endif %}
+        
+        {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+          <li>
+              <a href="{% url 'announcements' %}"><span class="las la-bullhorn"></span>
+              <span>My Announcements</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'new_announcement_round' %}"><span class="las la-plus-circle"></span>
+              <span>Announce New Round</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'new_announcement' %}"><span class="las la-plus"></span>
+              <span>New Announcement</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'announce_internship' %}"><span class="las la-plus-square"></span>
+              <span>Announce Internship</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'internships' %}"><span class="las la-user-md"></span>
+              <span>My Internships</span>
+            </a>
+          </li>
+        <!--Student only-->
+        {% else %}
+          <li>
+              <a href="{% url 'show_companies' %}"><span class="las la-registered"></span>
+              <span>Register</span>
+            </a>
+          </li>
+          <li>
+              <a href="{% url 'show_registrations' %}"><span class="las la-graduation-cap"></span>
+              <span>My Registrations</span>
+            </a>
+          </li>
+        {% endifequal %} {% endif %}
+
+
+    </ul>
+</div>
+{% endblock %}
+
+<!--For the text at the top of panel 2-->
+{% block dashboard_title %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Un-Restrict Users</a> {% endblock %}
+
+<!--For the user details displayed at the top right-->
+
+
+<!--For the main section : 3-->
+{% block section_main %}
+<main>
+    {% if request.user.is_authenticated and request.user.is_staff %} 
+    <div class="recent-grid1">
+        <div class="projects">
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin-left: 13%;">Un-Restrict users (single at 1 time)</h3>
+                    <button type="button" onclick="toexcel('#myTable')" style="width: 170px; text-align: center;">Export to excel</button>
+                    {% if success %}
+                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 user account unbanned</h6>
+                    {% endif %}
+                    <!-- <div id="myTable_filter" class="search-wrapper1">
+                <span class="las la-search"></span>
+                <input type="search" aria-controls="myTable" placeholder="Search User">
+              </div> -->
+                    <!-- <button type="button" name="See all">See all <span class="las la-arrow-right"></span></button> -->
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive container">
+                        <!-- <div id="myTable_filter" class="search-wrapper1 dataTables_filter">
+                  <span class="las la-search"></span>
+                  <input type="search" aria-controls="myTable" placeholder="Search User">
+                </div> -->
+                        <table id="myTable">
+                            <thead id="thead">
+                                <tr id="tr1" style="text-align: center;">
+                                    <td>User ID</td>
+                                    <td id="td1">Email</td>
+                                    <td id="td2">Username</td>
+                                    <td id="td3">Name</td>
+                                    <td id="td4">User Type</td>
+                                    <td>Unban</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for each in banned_users %}
+                                <tr style="text-align: center;">
+                                    <td>{{each.id}}</td>
+                                    <td>{{each.email}}</td>
+                                    <td>{{each.username}}</td>
+                                    <td>{{each.first_name}}
+                                        {% ifequal each.last_name 'This_is_a_company_Associated_account' %}
+                                        {% else %}
+                                        {{each.last_name}}
+                                        {% endifequal %}
+                                    </td>
+                                    <td>
+                                        {% ifequal each.last_name 'This_is_a_company_Associated_account' %}
+                                        <p style="color: rgb(33, 168, 146);">Company</p>
+                                        {% else %}
+                                        <p style="color: rgb(89, 150, 28);">Student</p>
+                                        {% endifequal %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'unban_user' item=each.id %}" onclick="return confirm('This will unban this user\'s account.')" style="text-decoration: none; padding-left: 20%;">
+                                            <span class="fas fa-check" style="color: rgb(110, 184, 27); font-size: 1.2rem;"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+</main>
+
+<script src="{% static 'dashboard/js/timer.js' %}"></script>
+{% endblock %}
