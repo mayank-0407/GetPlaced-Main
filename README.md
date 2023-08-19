@@ -8,6 +8,8 @@ Web-I is an innovative web application designed to streamline the internship rec
 
 ![login](https://github.com/mayank-0407/Web-I/assets/97796657/003d3d16-0d80-45d5-813d-9a6ac4e44a27)
 
+![WhatsApp Image 2023-08-19 at 17 19 46](https://github.com/mayank-0407/Web-I/assets/97796657/8fd35122-8a1f-45e3-a177-49e6bc2d7d66)
+
 # Key Features:
 
 Comprehensive Internship Listings: Our platform hosts a vast array of internships from top companies offering an extensive selection of opportunities to choose from.
