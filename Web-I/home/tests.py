@@ -20,7 +20,7 @@ class UnitTest(TestCase):
     #Create a new student profile with the user create in Setup() method
     #There are more fields in the profile which would be set to default if not given in the create() function
     def setUp(self):
-        self.user = User.objects.create_user(username="ABCDE", password="ABCDE@123", email="aditya.iiita2001@gmail.com")
+        self.user = User.objects.create_user(username="ABCDE", password="ABCDE@123", email="mayankdatabase04@gmail.com")
         self.user.save()
         self.user.is_staff=True
         self.user.save()
@@ -40,7 +40,7 @@ class UnitTest(TestCase):
 
     #Checks for when correct email and password is given
     def test_correct_email_password(self):
-        getuser=User.objects.get(email="aditya.iiita2001@gmail.com").username
+        getuser=User.objects.get(email="mayankdatabase04@gmail.com").username
         user=authenticate(username=getuser, password="ABCDE@123")
         self.assertTrue((user is not None) and user.is_authenticated)
 
