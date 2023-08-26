@@ -41,3 +41,10 @@ Internship Alerts: Users can opt to receive email notifications about new intern
 Simplicity and Efficiency: Our platform is designed for ease of use, making it simple for both students and employers to navigate and utilize its features effectively.
 
 Diversity and Inclusivity: We are committed to promoting diversity and inclusivity in the workplace by connecting students from all backgrounds with internship opportunities.
+
+# How to Use?
+- virtualenv env
+- git clone <http-link>
+- cd repo/Web-I
+- pip3 install -r requirements.txt
+- python manage.py runserver
