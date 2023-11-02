@@ -48,3 +48,5 @@ Diversity and Inclusivity: We are committed to promoting diversity and inclusivi
 - cd repo/Web-I
 - pip3 install -r requirements.txt
 - python manage.py runserver
+- OR
+- docker run -p3000:80 image
