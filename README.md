@@ -1,4 +1,4 @@
-Welcome to Web-I, your one-stop destination for discovering exciting internship opportunities! Whether you are a student looking to gain real-world experience or a company seeking fresh talent, Web-I is the perfect platform to bridge the gap between aspirations and opportunities.
+Welcome to Web-I, A one-stop destination for discovering exciting internship opportunities! Whether you are a student looking to gain real-world experience or a company seeking fresh talent, Web-I is the perfect platform to bridge the gap between aspirations and opportunities.
 
 # Overview:
 Web-I is an innovative web application designed to streamline the internship recruitment process. With a user-friendly interface and powerful search functionality, it connects students, graduates, and young professionals with a diverse range of internships across various industries.
