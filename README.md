@@ -1,9 +1,9 @@
-Welcome to Web-I, A one-stop destination for discovering exciting internship opportunities! Whether you are a student looking to gain real-world experience or a company seeking fresh talent, Web-I is the perfect platform to bridge the gap between aspirations and opportunities.
+Welcome to GetPlaced, A one-stop destination for discovering exciting internship opportunities! Whether you are a student looking to gain real-world experience or a company seeking fresh talent, GetPlaced is the perfect platform to bridge the gap between aspirations and opportunities.
 
 # Overview:
-Web-I is an innovative web application designed to streamline the internship recruitment process. With a user-friendly interface and powerful search functionality, it connects students, graduates, and young professionals with a diverse range of internships across various industries.
+GetPlaced is an innovative web application designed to streamline the internship recruitment process. With a user-friendly interface and powerful search functionality, it connects students, graduates, and young professionals with a diverse range of internships across various industries.
 
-# How Web-I looks like:
+# How GetPlaced looks like:
 ![dashboard](https://github.com/mayank-0407/Web-I/assets/97796657/90927218-e02e-4ac2-ab95-da6b2196b28c)
 
 ![login](https://github.com/mayank-0407/Web-I/assets/97796657/003d3d16-0d80-45d5-813d-9a6ac4e44a27)
@@ -36,16 +36,16 @@ Internship Alerts: Users can opt to receive email notifications about new intern
 - Shortlist candidates efficiently and manage the entire recruitment process through our platform.
 - Provide feedback and reviews to strengthen the internship ecosystem.
 
-# Why Web-I?
+# Why GetPlaced?
 
-Simplicity and Efficiency: Our platform is designed for ease of use, making it simple for both students and employers to navigate and utilize its features effectively.
+Simplicity and Efficiency: Our platform is designed for ease of use, making it simple for students and employers to navigate and utilize its features effectively.
 
 Diversity and Inclusivity: We are committed to promoting diversity and inclusivity in the workplace by connecting students from all backgrounds with internship opportunities.
 
 # How to Use?
 - virtualenv env
 - git clone <http-link>
-- cd repo/Web-I
+- cd repo/GetPlaced-Main
 - pip3 install -r requirements.txt
 - python manage.py runserver
 - OR
