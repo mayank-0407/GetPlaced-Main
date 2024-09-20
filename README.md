@@ -4,11 +4,11 @@ Welcome to GetPlaced, A one-stop destination for discovering exciting internship
 GetPlaced is an innovative web application designed to streamline the internship recruitment process. With a user-friendly interface and powerful search functionality, it connects students, graduates, and young professionals with a diverse range of internships across various industries.
 
 # How GetPlaced looks like:
-![dashboard](https://github.com/mayank-0407/Web-I/assets/97796657/90927218-e02e-4ac2-ab95-da6b2196b28c)
+![image](https://github.com/user-attachments/assets/0af0cca2-4c69-4552-a82b-faa1d38f68a1)
 
 ![login](https://github.com/mayank-0407/Web-I/assets/97796657/003d3d16-0d80-45d5-813d-9a6ac4e44a27)
 
-![WhatsApp Image 2023-08-19 at 17 19 46](https://github.com/mayank-0407/Web-I/assets/97796657/8fd35122-8a1f-45e3-a177-49e6bc2d7d66)
+![image](https://github.com/user-attachments/assets/4767b164-fa6a-4bb8-9649-1195af6c1339)
 
 # Key Features:
 
